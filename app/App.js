@@ -1,47 +1,66 @@
-
-import { Text, SafeAreaView, StyleSheet, View } from 'react-native'; // Import View from react-native
+import { Text, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
-import { Button, TextInput, Title } from 'react-native-paper'; // Title from react-native-paper
+import { Button, TextInput, Title } from 'react-native-paper';
 
 export default function App() {
-    let [cep, setCep] = useState(null);
-    let [render, setRender] = useState([]);
+    const [cep, setCep] = useState('');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [addressData, setAddressData] = useState({});
 
-    let BuscaCep = (xcep) => {
-        let url = `https://viacep.com.br/ws/${xcep}/json/`;
-        console.log(url);
+    const buscaCep = (xcep) => {
+        const url = `https://viacep.com.br/ws/${xcep}/json/`;
         fetch(url)
-            .then((resp) => { return resp.json() })
+            .then((resp) => resp.json())
             .then((dados) => {
-                console.log(dados);
-                setRender(dados);
+                setAddressData(dados);
             })
-            .catch((erro) => { console.log(erro) });
-    }
+            .catch((erro) => {
+                console.log(erro);
+            });
+    };
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.titleContainer}> {/* Wrap Title in a View */}
-                <Title>Cep</Title> {/* Using Title from React Native Paper */}
+            <View style={styles.titleContainer}>
+                <Title>Cadastro de Endereço</Title>
             </View>
             <TextInput
-                label="Digite Cep" // Label for the TextInput
-                value={cep} // Bind the value to the state
-                onChangeText={(value) => { setCep(value) }} // Update state on text change
-                mode="outlined" // You can choose 'outlined' or 'flat'
-                style={styles.input} // Optional: Add styles for the input
+                label="Nome"
+                value={name}
+                onChangeText={(value) => setName(value)}
+                mode="outlined"
+                style={styles.input}
+            />
+            <TextInput
+                label="Email"
+                value={email}
+                onChangeText={(value) => setEmail(value)}
+                mode="outlined"
+                style={styles.input}
+            />
+            <TextInput
+                label="Digite o CEP"
+                value={cep}
+                onChangeText={(value) => setCep(value)}
+                mode="outlined"
+                style={styles.input}
             />
             <Button 
-                mode="contained" // You can change the mode to 'outlined' if you prefer
-                onPress={() => { BuscaCep(cep) }}
+                mode="contained" 
+                onPress={() => buscaCep(cep)}
             >
                 Buscar
             </Button>
 
-            <Text> Endereço : {render["logradouro"]}</Text>
-            <Text> Bairro : {render["bairro"]}</Text>
-            <Text> Cidade : {render.localidade}</Text>
-            <Text> Estado : {render.uf}</Text> {/* Changed 'estado' to 'uf' */}
+            {addressData.logradouro && (
+                <View style={styles.addressContainer}>
+                    <Text>Endereço: {addressData.logradouro}</Text>
+                    <Text>Bairro: {addressData.bairro}</Text>
+                    <Text>Cidade: {addressData.localidade}</Text>
+                    <Text>Estado: {addressData.uf}</Text>
+                </View>
+            )}
         </SafeAreaView>
     );
 }
@@ -50,20 +69,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 8,
-        margin: 20
+        padding: 16,
+        margin: 20,
     },
     titleContainer: {
-        alignItems: 'center', // Center horizontally
-        marginBottom: 16, // Optional: Add some margin for spacing
+        alignItems: 'center',
+        marginBottom: 16,
     },
     input: {
-        marginBottom: 16, // Add some margin for spacing
+        marginBottom: 16,
     },
-    paragraph: {
-        margin: 24,
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
+    addressContainer: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 5,
     },
 });
