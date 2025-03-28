@@ -55,6 +55,8 @@ export default function App() {
 
             {addressData.logradouro && (
                 <View style={styles.addressContainer}>
+                    <Text>Nome: {name}</Text>
+                    <Text>Email: {email}</Text>
                     <Text>Endereço: {addressData.logradouro}</Text>
                     <Text>Bairro: {addressData.bairro}</Text>
                     <Text>Cidade: {addressData.localidade}</Text>
